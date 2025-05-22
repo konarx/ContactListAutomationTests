@@ -1,0 +1,27 @@
+{
+  "BrowserOptions": {
+    "DownloadsPath": "downloads",
+    "Channel": "chromium",
+    "Headless": true,
+    "SlowMo": 0,
+    "Timeout": 20000,
+    "Args": [
+      "--disable-search-engine-choice-screen",
+      "--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints"
+    ]
+  },
+  "BrowserContextOptions": {
+    "ViewportSize": {
+      "Width": 1920,
+      "Height": 1080
+    },
+    "Permissions": [
+      "clipboard-read"
+    ]
+  },
+  "AppConfig": {
+    "BaseURL": "https://thinking-tester-contact-list.herokuapp.com",
+    "Username": "gagagogo@gmail.com",
+    "Password": "gagagogo123"
+  }
+}
