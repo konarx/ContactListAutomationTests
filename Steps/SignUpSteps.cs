@@ -13,9 +13,15 @@ public class SignUp(
     [Given("the user is on the Sign Up page")]
     public async Task GivenTheUserIsOnTheSignUpPage()
     {
-        await loginPage.SignUpButton.ClickAsync();
-        await page.WaitForLoadStateAsync();
-        await Assertions.Expect(signUpPage.TitleHeading).ToHaveTextAsync("Add User");
+        const string expectedTitle = "Add User";
+        var pageTitle = await signUpPage.TitleHeading.TextContentAsync();
+        if (pageTitle is not expectedTitle)
+        {
+            await loginPage.SignUpButton.ClickAsync();
+            await page.WaitForLoadStateAsync();
+        }
+
+        await Assertions.Expect(signUpPage.TitleHeading).ToHaveTextAsync(expectedTitle);
     }
 
     [When("the user fills in the sign-up form with valid details")]

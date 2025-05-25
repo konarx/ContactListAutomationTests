@@ -13,7 +13,7 @@ public class ContactListPage(IPage page)
     public ILocator ContactsTable => page.Locator(".contactTable");
     public ILocator TableHeaderRow => page.Locator(".contactTableHead tr");
     public ILocator TableBody => page.Locator(".contactTable-Body");
-    public ILocator AllRows => ContactsTable.Locator("tr");
+    public ILocator AllRows => ContactsTable.Locator("tr.contactTableBodyRow");
 
     public ILocator RowByName(string fullName) => page.Locator($".contactTable-Body tr:has(td >> text='{fullName}')");
 

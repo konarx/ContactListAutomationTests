@@ -14,4 +14,12 @@ public class LoginPage(IPage page)
     public ILocator Form => page.Locator("form");
 
     public ILocator SignUpButton => page.Locator("#signup");
+
+    public async Task LoginAsync(string username, string password)
+    {
+        await EmailInput.FillAsync(username);
+        await PasswordInput.FillAsync(password);
+        await SubmitButton.ClickAsync();
+        await page.WaitForLoadStateAsync();
+    }
 }
