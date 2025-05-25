@@ -17,15 +17,15 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.0.x"
+
+      - name: 🔨 Build
+        run: dotnet build --configuration Release
       
       # Install the Playwright CLI (global) + browser binaries
       - name: 🌐 Install Playwright
         run: |
           dotnet tool install --global Microsoft.Playwright.CLI
           playwright install --with-deps
-
-      - name: 🔨 Build
-        run: dotnet build --configuration Release
 
       - name: 🧪 Run tests
         run: dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx"
