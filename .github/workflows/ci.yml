@@ -1,0 +1,39 @@
+name: Playwright-BDD Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⤵️  Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⚙️  Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+      
+      # Install the Playwright CLI (global) + browser binaries
+      - name: 🌐 Install Playwright
+        run: |
+          dotnet tool install --global Microsoft.Playwright.CLI
+          playwright install --with-deps
+
+      - name: 🔨 Build
+        run: dotnet build --configuration Release
+
+      - name: 🧪 Run tests
+        run: dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx"
+      
+      # Optional: publish the TRX so you can download it from the workflow page
+      - name: 📦 Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/test-results.trx'
