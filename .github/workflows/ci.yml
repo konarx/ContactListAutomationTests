@@ -24,7 +24,7 @@ jobs:
       
       # Install the Playwright CLI (global) + browser binaries
       - name: 🌐 Install Playwright
-        run: pwsh bin/Release/net8.0/playwright.ps1 install --with-deps
+        run: pwsh bin/Release/net9.0/playwright.ps1 install --with-deps
 
       - name: 🧪 Run tests
         run: dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx"
