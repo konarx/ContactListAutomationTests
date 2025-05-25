@@ -5,6 +5,11 @@ on:
     branches: [ main ]
   pull_request:
 
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,15 +26,27 @@ jobs:
 
       - name: 🔨 Build
         run: dotnet build --configuration Release
-      
-      # Install the Playwright CLI (global) + browser binaries
+
       - name: 🌐 Install Playwright
         run: pwsh bin/Release/net9.0/playwright.ps1 install --with-deps
 
       - name: 🧪 Run tests
         run: dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx"
-      
-      # Publish the TRX so it can be downloaded from the workflow page
+
+      - name: 📊 Report test results
+        # run even if tests failed or were canceled
+        if: ${{ always() }}
+        uses: dorny/test-reporter@v2
+        with:
+          name: Playwright-BDD Tests          # title of the Check Run
+          path: '**/test-results.trx'         # where the TRX files are
+          reporter: dotnet-trx                # format of the results
+          list-suites: failed                 # only list suites that failed
+          list-tests: failed                  # only list failed tests
+          max-annotations: 50                 # annotate up to 50 failures
+          fail-on-error: true                 # mark the step (and job) red if any test failed
+
+      # Still publish the raw TRX so it can be downloaded (if needed)
       - name: 📦 Upload test results
         if: always()
         uses: actions/upload-artifact@v4
