@@ -21,17 +21,7 @@ public class AddContactSteps(
         var testContact = TestData.CreateContact();
         scenarioContext["testContact"] = testContact;
 
-        await addContactPage.FirstNameInput.FillAsync(testContact.FirstName);
-        await addContactPage.LastNameInput.FillAsync(testContact.LastName);
-        await addContactPage.BirthdateInput.FillAsync(testContact.Birthdate);
-        await addContactPage.EmailInput.FillAsync(testContact.Email);
-        await addContactPage.PhoneInput.FillAsync(testContact.Phone);
-        await addContactPage.Street1Input.FillAsync(testContact.Street1);
-        await addContactPage.Street2Input.FillAsync(testContact.Street2);
-        await addContactPage.CityInput.FillAsync(testContact.City);
-        await addContactPage.StateInput.FillAsync(testContact.StateProvince);
-        await addContactPage.PostalCodeInput.FillAsync(testContact.PostalCode);
-        await addContactPage.CountryInput.FillAsync(testContact.Country);
+        await addContactPage.FillContactDetailsAsync(testContact);
     }
 
     [When("the user submits the contact form")]
@@ -44,20 +34,10 @@ public class AddContactSteps(
     [When("the user attempts to create a contact with invalid date of birth")]
     public async Task WhenTheUserAttemptsToCreateAContactWithInvalidDateOfBirth()
     {
-        var testContact = TestData.CreateContact();
+        var testContact = TestData.CreateContact() with { Birthdate = "12/31/2021" }; // Invalid date of birth
         scenarioContext["testContact"] = testContact;
 
-        await addContactPage.FirstNameInput.FillAsync(testContact.FirstName);
-        await addContactPage.LastNameInput.FillAsync(testContact.LastName);
-        await addContactPage.BirthdateInput.FillAsync("12/31/2021"); // Invalid date of birth
-        await addContactPage.EmailInput.FillAsync(testContact.Email);
-        await addContactPage.PhoneInput.FillAsync(testContact.Phone);
-        await addContactPage.Street1Input.FillAsync(testContact.Street1);
-        await addContactPage.Street2Input.FillAsync(testContact.Street2);
-        await addContactPage.CityInput.FillAsync(testContact.City);
-        await addContactPage.StateInput.FillAsync(testContact.StateProvince);
-        await addContactPage.PostalCodeInput.FillAsync(testContact.PostalCode);
-        await addContactPage.CountryInput.FillAsync(testContact.Country);
+        await addContactPage.FillContactDetailsAsync(testContact);
     }
 
     [Then("the user should see an error message {string}")]
@@ -66,5 +46,4 @@ public class AddContactSteps(
         await Assertions.Expect(addContactPage.ErrorBanner).ToBeVisibleAsync();
         await Assertions.Expect(addContactPage.ErrorBanner).ToHaveTextAsync(errorMessage);
     }
-    
 }

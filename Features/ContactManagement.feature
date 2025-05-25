@@ -12,7 +12,7 @@ Feature: Contact management
         Then the user should be on the "Add Contact" page
         When the user fills in the contact form with valid details
         And the user submits the contact form
-        Then the user should be on the contact details page
+        Then the user should be on the Contact List page
         And the contact should be created successfully
 
     Scenario: Try to add a contact with invalid date of birth and validate the error message
@@ -26,3 +26,7 @@ Feature: Contact management
     Scenario: Delete an existing contact
         Given the user is logged in
         And a contact exist in table
+        When the user navigates to the contact details page of the existing contact
+        Then the user should be on the contact details page
+        When the user clicks on "Delete Contact" button
+        And the contact should be deleted successfully

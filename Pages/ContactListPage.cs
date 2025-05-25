@@ -1,8 +1,11 @@
 using ContactListAutomationTests.Models;
+using ContactListAutomationTests.Steps;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace ContactListAutomationTests.Pages;
 
-public class ContactListPage(IPage page)
+public class ContactListPage(IPage page, AddContactSteps addContactSteps)
 {
     public ILocator TitleHeading => page.Locator("header h1");
     public ILocator LogoutButton => page.Locator("#logout");
@@ -48,5 +51,46 @@ public class ContactListPage(IPage page)
     public async Task<bool> IsContactPresentAsync(string fullName)
     {
         return await RowByName(fullName).IsVisibleAsync();
+    }
+
+    public async Task EnsureContactExistsAsync()
+    {
+        if (await AllRows.CountAsync() is 0)
+        {
+            await AddContactButton.ClickAsync();
+            await page.WaitForLoadStateAsync();
+            await addContactSteps.ThenTheUserShouldBeOnThePage();
+            await addContactSteps.WhenTheUserFillsInTheContactFormWithValidDetails();
+            await addContactSteps.WhenTheUserSubmitsTheContactForm();
+            await Task.WhenAll(
+                Assertions.Expect(ContactsTable).ToBeVisibleAsync(),
+                Assertions.Expect(LogoutButton).ToBeVisibleAsync(),
+                Assertions.Expect(TitleHeading).ToHaveTextAsync("Contact List"),
+                Assertions.Expect(AllRows).ToHaveCountAsync(1)
+            );
+        }
+    }
+
+    public async Task ValidateContactsTableFirstRowAsync(DTOs.Contact testContact)
+    {
+        var name = await GetFirstCellTextByHeaderAsync("Name");
+        var birthdate = await GetFirstCellTextByHeaderAsync("Birthdate");
+        var email = await GetFirstCellTextByHeaderAsync("Email");
+        var phone = await GetFirstCellTextByHeaderAsync("Phone");
+        var address = await GetFirstCellTextByHeaderAsync("Address");
+        var cityStateProvincePostalCode = await GetFirstCellTextByHeaderAsync("City, State/Province, Postal Code");
+        var country = await GetFirstCellTextByHeaderAsync("Country");
+
+        using (new AssertionScope())
+        {
+            name.Should().Be($"{testContact.FirstName} {testContact.LastName}");
+            birthdate.Should().Be(testContact.Birthdate);
+            email.Should().Be(testContact.Email);
+            phone.Should().Be(testContact.Phone);
+            address.Should().Be($"{testContact.Street1} {testContact.Street2}");
+            cityStateProvincePostalCode.Should()
+                .Be($"{testContact.City} {testContact.StateProvince} {testContact.PostalCode}");
+            country.Should().Be(testContact.Country);
+        }
     }
 }

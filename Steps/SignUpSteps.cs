@@ -4,24 +4,15 @@ using ContactListAutomationTests.Pages;
 namespace ContactListAutomationTests.Steps;
 
 [Binding]
-public class SignUp(
+public class SignUpSteps(
     IPage page,
     ScenarioContext scenarioContext,
-    LoginPage loginPage,
     SignUpPage signUpPage)
 {
     [Given("the user is on the Sign Up page")]
     public async Task GivenTheUserIsOnTheSignUpPage()
     {
-        const string expectedTitle = "Add User";
-        var pageTitle = await signUpPage.TitleHeading.TextContentAsync();
-        if (pageTitle is not expectedTitle)
-        {
-            await loginPage.SignUpButton.ClickAsync();
-            await page.WaitForLoadStateAsync();
-        }
-
-        await Assertions.Expect(signUpPage.TitleHeading).ToHaveTextAsync(expectedTitle);
+        await signUpPage.EnsureUserIsIsOnSignUpPageAsync();
     }
 
     [When("the user fills in the sign-up form with valid details")]
@@ -30,10 +21,7 @@ public class SignUp(
         var testUser = TestData.CreateUser();
         scenarioContext["testUser"] = testUser;
 
-        await signUpPage.FirstNameInput.FillAsync(testUser.FirstName);
-        await signUpPage.LastNameInput.FillAsync(testUser.LastName);
-        await signUpPage.EmailInput.FillAsync(testUser.Email);
-        await signUpPage.PasswordInput.FillAsync(testUser.Password);
+        await signUpPage.FillSignUpDetailsAsync(testUser);
     }
 
     [When("the user submits the sign-up form")]

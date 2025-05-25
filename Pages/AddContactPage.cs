@@ -1,3 +1,5 @@
+using ContactListAutomationTests.Models;
+
 namespace ContactListAutomationTests.Pages;
 
 public class AddContactPage(IPage page)
@@ -25,4 +27,19 @@ public class AddContactPage(IPage page)
 
     public ILocator SubmitButton => page.Locator("#submit");
     public ILocator CancelButton => page.Locator("#cancel");
+
+    public async Task FillContactDetailsAsync(DTOs.Contact contact)
+    {
+        await FirstNameInput.FillAsync(contact.FirstName);
+        await LastNameInput.FillAsync(contact.LastName);
+        await BirthdateInput.FillAsync(contact.Birthdate);
+        await EmailInput.FillAsync(contact.Email);
+        await PhoneInput.FillAsync(contact.Phone);
+        await Street1Input.FillAsync(contact.Street1);
+        await Street2Input.FillAsync(contact.Street2);
+        await CityInput.FillAsync(contact.City);
+        await StateInput.FillAsync(contact.StateProvince);
+        await PostalCodeInput.FillAsync(contact.PostalCode);
+        await CountryInput.FillAsync(contact.Country);
+    }
 }
